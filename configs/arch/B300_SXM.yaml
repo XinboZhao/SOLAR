@@ -16,4 +16,4 @@ MAC_per_cycle_bf16_tc: 606208  # Same as FP16 - BF16 has identical TC throughput
 MAC_per_cycle_fp8_tc: 1212416  # 148 SM * 8192; @ 2.025GHz: 4.910 PFLOPS dense
 MAC_per_cycle_int8_tc: 1212416  # Same rate as FP8 on Blackwell
 MAC_per_cycle_nvfp4_tc: 3637248  # 148 SM * 24576; @ 2.025GHz: 14.73 PFLOPS dense (published ~15 PFLOPS)
-MAC_per_cycle_fp64_tc: 18944  # 148 SM * 128; @ 2.025GHz: 0.077 PFLOPS (estimated, not officially published)
+MAC_per_cycle_fp64_tc: 309  # @ 2.025GHz: 0.00125 dense PFLOPS (HGX B300: 10 TFLOPS across 8 GPUs)

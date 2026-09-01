@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+
+name: "RTX_PRO_5000_72GB_Blackwell"
+# NVIDIA RTX PRO 5000 72GB Blackwell public SKU profile.
+#   GPU: GB202 / PG153 SKU 540, compute capability 12.0
+#   SMs: 110; L2: 96 MiB; GDDR7 ECC: 72 GB on a 384-bit bus
+#   PCIe Gen5 x16; dual-slot; 350 W; NVLink unsupported
+#   Shared memory: 100 KiB/SM, up to 99 KiB/block
+#   Clock: 3090 MHz public peak-performance operating point
+# Tensor peaks are dense unless explicitly noted. SOLAR counts one MAC as
+# two operations: peak FLOPS/OPS = MAC_per_cycle * freq_GHz * 2.
+# Validation: ECC enabled, 350 W, driver 580.95.05, CUDA 13.2, PyTorch 26.05;
+# 8192^3 dense GEMM unless noted. Measurements below report the best observed run.
+SRAM_capacity: 100663296  # 96 MiB L2
+SRAM_byte_per_cycle: 3072  # Estimated: 12 controllers * 4 L2 slices * 64 B/cycle; unpublished
+DRAM_capacity: 72000000000  # 72 GB GDDR7 ECC
+DRAM_byte_per_cycle: 434.95  # 1.344 TB/s / 3.090 GHz
+freq_GHz: 3.09  # Public peak-performance operating point
+MAC_per_cycle_fp32_sm: 14080  # 87.01 TFLOPS public peak; 70.24 TFLOPS measured by CUDA Core-only FFMA
+MAC_per_cycle_tf32_tc: 21667  # 133.90 dense TFLOPS; 118.76 TFLOPS measured
+MAC_per_cycle_fp16_tc: 43333  # 267.80 dense TFLOPS; 218.01 TFLOPS measured
+MAC_per_cycle_bf16_tc: 43333  # 267.80 dense TFLOPS (535.5 sparse); 225.29 TFLOPS measured
+MAC_per_cycle_fp8_tc: 86648  # 535.48 dense TFLOPS (1071 sparse); 514.75 TFLOPS measured
+MAC_per_cycle_int8_tc: 86648  # 535.48 dense TOPS; 529.02 TOPS measured
+MAC_per_cycle_nvfp4_tc: 173295  # 1070.96 dense TFLOPS (2142 sparse); 1037.17 TFLOPS measured
+MAC_per_cycle_fp64_tc: 220  # 1.36 TFLOPS estimate; 0.996 TFLOPS measured by 8192^3 DGEMM; no FP64 Tensor Cores

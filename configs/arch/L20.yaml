@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+
+name: "L20"
+# NVIDIA L20 (Ada Lovelace, compute capability 8.9).
+# Public NVIDIA source for the SKU and capacity:
+#   https://docs.nvidia.com/vgpu/latest/grid-vgpu-user-guide/virtual-gpu-types-grid-reference.html
+#   The L20-48C profile establishes one physical GPU per board and a 49152 MB framebuffer.
+# Public NVIDIA source for the Ada per-SM datapaths and dense/sparse precision ratios:
+#   https://images.nvidia.com/aem-dam/Solutions/Data-Center/l4/nvidia-ada-gpu-architecture-whitepaper-V2.02.pdf
+# NVIDIA does not publish a complete L20 speeds-and-feeds datasheet. The remaining board
+# properties below were read from an L20 (PCI device 10de:26ba, ECC enabled) with
+# cudaGetDeviceProperties/nvidia-smi; arithmetic and GEMM validation are documented inline.
+SRAM_capacity: 100663296  # 96 MiB L2, reported by CUDA
+SRAM_byte_per_cycle: 3072  # 48 L2 slices * 64 B/clock read (Ada AD102 estimate)
+DRAM_capacity: 51539607552  # 48 GiB physical framebuffer; CUDA reported 47,667,740,672 usable bytes with ECC enabled
+DRAM_byte_per_cycle: 342.9  # 864.096 GB/s / 2.520 GHz; CUDA reported 384-bit GDDR6 at 9001 MHz
+freq_GHz: 2.52  # Maximum SM clock reported by nvidia-smi; default power limit 350 W
+MAC_per_cycle_fp32_sm: 11776  # 92 SM * 128; 59.35 TFLOPS theoretical, 56.81 TFLOPS measured by a CUDA Core-only FFMA kernel
+# Dense Tensor Core throughput. One MAC is two operations; Ada 2:4 sparse figures would be 2x.
+MAC_per_cycle_tf32_tc: 11776  # 92 SM * 128; 59.35 dense TFLOPS theoretical
+MAC_per_cycle_fp16_tc: 23552  # 92 SM * 256; 118.70 dense TFLOPS theoretical, 108.66 TFLOPS measured by 8192^3 GEMM
+MAC_per_cycle_bf16_tc: 23552  # 118.70 dense TFLOPS theoretical, 113.91 TFLOPS measured by 8192^3 GEMM
+MAC_per_cycle_fp8_tc: 47104  # 237.40 dense TFLOPS theoretical, 221.31 TFLOPS measured by FP8 E4M3 scaled GEMM
+MAC_per_cycle_int8_tc: 47104  # 237.40 dense TOPS theoretical, 222.77 TOPS measured by CUTLASS INT8 TensorOp GEMM
+MAC_per_cycle_fp64_tc: 184  # Conventional FP64: 0.927 TFLOPS theoretical, 0.804 TFLOPS measured by 4096^3 DGEMM; no FP64 Tensor Cores
