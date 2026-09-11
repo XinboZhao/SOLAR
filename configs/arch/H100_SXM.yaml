@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+
+name: "H100_SXM"
+# NVIDIA H100 SXM 80GB (Hopper GH100, compute capability 9.0).
+# Public specifications:
+#   https://www.nvidia.com/en-us/data-center/h100/
+# NVIDIA marks the published TF32, BF16, FP16, FP8, and INT8 figures with
+# structured sparsity. The Tensor Core rates below are the corresponding dense
+# values. SOLAR counts one MAC as two operations:
+#   peak FLOPS/OPS = MAC_per_cycle * freq_GHz * 2.
+# Validation GPU: 132 SMs, PCI device 10de:2330, ECC enabled, 700 W power limit,
+# and 1980 MHz maximum SM clock. Validation used CUDA/PyTorch dense GEMM.
+# GEMM validation used 16384^3 for TF32/FP16/BF16 and 8192^3 otherwise.
+SRAM_capacity: 52428800  # 50 MiB L2, published and reported by CUDA
+DRAM_capacity: 85899345920  # 80 GiB HBM3; CUDA reported 85,019,590,656 usable bytes with ECC enabled
+DRAM_byte_per_cycle: 1691.9  # 3.35 TB/s published bandwidth / 1.980 GHz
+freq_GHz: 1.98  # Maximum SM clock reported by nvidia-smi on the validation GPU
+MAC_per_cycle_fp32_sm: 16896  # 132 SM * 128; 66.91 TFLOPS (67 published), 54.48 TFLOPS measured by CUDA Core-only FFMA
+MAC_per_cycle_tf32_tc: 124874  # 494.50 dense TFLOPS (989 sparse); 470.68 TFLOPS measured with zero-valued dense GEMM
+MAC_per_cycle_fp16_tc: 249874  # 989.50 dense TFLOPS (1979 sparse); 804.43 TFLOPS measured with zero-valued dense GEMM
+MAC_per_cycle_bf16_tc: 249874  # 989.50 dense TFLOPS (1979 sparse); 842.74 TFLOPS measured with zero-valued dense GEMM
+MAC_per_cycle_fp8_tc: 499747  # 1979.00 dense TFLOPS (3958 sparse); 1660.29 TFLOPS measured by FP8 E4M3 dense GEMM
+MAC_per_cycle_int8_tc: 499747  # 1979.00 dense TOPS (3958 sparse); tested paths were software/kernel limited and not used to recalibrate
+MAC_per_cycle_fp64_tc: 16919  # 67.00 dense TFLOPS published; 65.27 TFLOPS measured by zero-valued DGEMM
